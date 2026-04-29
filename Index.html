@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mom & Me Bingo 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #2563a8;
+      --deep-blue: #1a3f6f;
+      --sky: #eff6ff;
+      --yellow: #f5c518;
+      --gold: #e0a800;
+      --text: #1e2d4a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--sky);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(37,99,168,0.10) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(245,197,24,0.13) 0%, transparent 50%);
+      min-height: 100vh;
+      font-family: 'Lato', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      color: var(--text);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    header .year {
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      font-size: 0.85rem;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--deep-blue);
+      line-height: 1.1;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--yellow);
+      -webkit-text-stroke: 1px var(--gold);
+    }
+
+    .divider {
+      margin: 12px auto 0;
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 24px;
+      animation: fadeDown 0.9s ease 0.1s both;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--deep-blue);
+      margin-bottom: 6px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: rgba(37,99,168,0.15);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--yellow));
+      border-radius: 99px;
+      transition: width 0.5s cubic-bezier(.4,0,.2,1);
+      width: 0%;
+    }
+
+    /* Grid */
+    .grid-wrap { animation: fadeUp 0.9s ease 0.2s both; width: 100%; }
+
+    .bingo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Each cell is a fixed min-height rectangle, NOT square */
+    .cell {
+      background: white;
+      border: 2px solid rgba(37,99,168,0.2);
+      border-radius: 16px;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.2s ease;
+      text-align: center;
+      user-select: none;
+      gap: 6px;
+    }
+
+    .cell:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(37,99,168,0.15);
+      border-color: var(--blue);
+    }
+
+    .cell .emoji {
+      font-size: 1.6rem;
+      line-height: 1;
+      display: block;
+    }
+
+    .cell .label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    /* Checked */
+    .cell.checked {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--deep-blue) 100%);
+      border-color: var(--deep-blue);
+      box-shadow: 0 6px 20px rgba(26,63,111,0.28);
+    }
+
+    .cell.checked .label,
+    .cell.checked .emoji { color: white; opacity: 0.95; }
+
+    .cell.checked::after {
+      content: '✓';
+      position: absolute;
+      top: 8px; right: 11px;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      font-weight: 900;
+    }
+
+    /* FREE */
+    .cell.free {
+      background: linear-gradient(135deg, var(--yellow) 0%, var(--gold) 100%);
+      border-color: var(--gold);
+      cursor: default;
+    }
+
+    .cell.free:hover { transform: none; box-shadow: none; }
+
+    .cell.free .label {
+      color: var(--deep-blue);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    /* Tracker */
+    .cell.tracker { cursor: default; }
+
+    .cell.tracker:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: rgba(37,99,168,0.2);
+    }
+
+    .cell.tracker.all-done {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--deep-blue) 100%);
+      border-color: var(--deep-blue);
+      box-shadow: 0 6px 20px rgba(26,63,111,0.28);
+    }
+
+    .cell.tracker.all-done .tracker-label,
+    .cell.tracker.all-done .emoji { color: white; opacity: 0.95; }
+
+    .cell.tracker.all-done::after {
+      content: '✓';
+      position: absolute;
+      top: 8px; right: 11px;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      font-weight: 900;
+    }
+
+    .tracker-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .tracker-dots {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--blue);
+      background: white;
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .dot:hover { transform: scale(1.25); }
+
+    .dot.filled {
+      background: var(--yellow);
+      border-color: var(--gold);
+    }
+
+    .dot.filled::after {
+      content: '✓';
+      font-size: 0.55rem;
+      font-weight: 900;
+      color: var(--deep-blue);
+    }
+
+    .cell.tracker.all-done .dot {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .cell.tracker.all-done .dot.filled {
+      background: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    /* Banner */
+    .bingo-banner {
+      display: none;
+      margin-top: 28px;
+      text-align: center;
+      animation: pop 0.5s cubic-bezier(.4,0,.2,1);
+    }
+
+    .bingo-banner.show { display: block; }
+
+    .bingo-banner p {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--deep-blue);
+    }
+
+    .bingo-banner span { color: var(--yellow); -webkit-text-stroke: 1px var(--gold); }
+
+    .counter {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--deep-blue);
+      animation: fadeUp 1s ease 0.3s both;
+    }
+
+    .counter strong { color: var(--blue); }
+
+    .reset-btn {
+      margin-top: 18px;
+      padding: 10px 28px;
+      border: 2px solid var(--blue);
+      border-radius: 99px;
+      background: transparent;
+      color: var(--blue);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+
+    .reset-btn:hover { background: var(--blue); color: white; }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.7); opacity: 0; }
+      70%  { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .cell { animation: fadeUp 0.5s ease both; }
+    .cell:nth-child(1)  { animation-delay: 0.04s; }
+    .cell:nth-child(2)  { animation-delay: 0.07s; }
+    .cell:nth-child(3)  { animation-delay: 0.10s; }
+    .cell:nth-child(4)  { animation-delay: 0.13s; }
+    .cell:nth-child(5)  { animation-delay: 0.16s; }
+    .cell:nth-child(6)  { animation-delay: 0.19s; }
+    .cell:nth-child(7)  { animation-delay: 0.22s; }
+    .cell:nth-child(8)  { animation-delay: 0.25s; }
+    .cell:nth-child(9)  { animation-delay: 0.28s; }
+    .cell:nth-child(10) { animation-delay: 0.31s; }
+    .cell:nth-child(11) { animation-delay: 0.34s; }
+    .cell:nth-child(12) { animation-delay: 0.37s; }
+    .cell:nth-child(13) { animation-delay: 0.40s; }
+    .cell:nth-child(14) { animation-delay: 0.43s; }
+    .cell:nth-child(15) { animation-delay: 0.46s; }
+    .cell:nth-child(16) { animation-delay: 0.49s; }
+    .cell:nth-child(17) { animation-delay: 0.52s; }
+    .cell:nth-child(18) { animation-delay: 0.55s; }
+    .cell:nth-child(19) { animation-delay: 0.58s; }
+    .cell:nth-child(20) { animation-delay: 0.61s; }
+    .cell:nth-child(21) { animation-delay: 0.64s; }
+    .cell:nth-child(22) { animation-delay: 0.67s; }
+    .cell:nth-child(23) { animation-delay: 0.70s; }
+    .cell:nth-child(24) { animation-delay: 0.73s; }
+    .cell:nth-child(25) { animation-delay: 0.76s; }
+
+    /* Mobile: 2 columns */
+    @media (max-width: 600px) {
+      .bingo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .cell { min-height: 110px; padding: 12px 10px; }
+      .cell .label { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="year">✦ 2026 ✦</div>
+    <h1>Mom &amp; <em>Me</em> Bingo</h1>
+    <div class="divider"></div>
+    <p class="subtitle">Redmond · Bellevue · Beyond 🌲</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Adventures completed</span>
+      <span id="prog-text">0 / 24</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="bingo-grid" id="grid"></div>
+  </div>
+
+  <div class="bingo-banner" id="banner">
+    <p>🎉 <span>BINGO!</span> You did it! 🎉</p>
+  </div>
+
+  <p class="counter">Tap a square to mark it complete — <strong id="count">0</strong> done so far!</p>
+  <button class="reset-btn" onclick="resetAll()">Reset Board</button>
+
+  <script>
+    const squares = [
+      { type: 'tracker', emoji: '🏃', label: '5 × 5Ks',            count: 5, key: '5ks' },
+      { type: 'normal',  emoji: '⛴️', label: 'Ferry Ride' },
+      { type: 'normal',  emoji: '🏛️', label: 'Museum' },
+      { type: 'normal',  emoji: '🛍️', label: 'Shopping Trip — Buy Something Special' },
+      { type: 'normal',  emoji: '👩‍🍳', label: 'Cooking Class' },
+      { type: 'normal',  emoji: '🎬', label: 'Go to a Movie' },
+      { type: 'normal',  emoji: '🦁', label: 'Zoo or Aquarium' },
+      { type: 'normal',  emoji: '🥕', label: "Farmer's Market" },
+      { type: 'normal',  emoji: '🍪', label: 'Christmas Baking' },
+      { type: 'normal',  emoji: '🍽️', label: 'New Spot for Lunch or Dinner' },
+      { type: 'normal',  emoji: '🎨', label: 'Creative Class' },
+      { type: 'normal',  emoji: '🎪', label: 'Street Fair' },
+      { type: 'free' },
+      { type: 'normal',  emoji: '🎮', label: 'Game Night' },
+      { type: 'normal',  emoji: '📖', label: 'Read a Book Together & Talk About It' },
+      { type: 'normal',  emoji: '🚗', label: 'Day Trip or Weekend Trip' },
+      { type: 'normal',  emoji: '☕', label: 'Explore a New Coffee Shop' },
+      { type: 'normal',  emoji: '🍓', label: 'Fruit Picking' },
+      { type: 'tracker', emoji: '🍸', label: '5 Espresso Martinis', count: 5, key: 'martinis' },
+      { type: 'normal',  emoji: '🏅', label: '10K' },
+      { type: 'normal',  emoji: '🎭', label: 'Live Show' },
+      { type: 'normal',  emoji: '🛍️', label: 'Crossroads Date' },
+      { type: 'normal',  emoji: '✂️', label: 'Craft Day' },
+      { type: 'normal',  emoji: '💪', label: 'Exercise Class Together' },
+      { type: 'normal',  emoji: '🍷', label: 'Wine Tasting' },
+    ];
+
+    const STORAGE_KEY = 'mom-me-bingo-2026-v2';
+    let appState = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || {
+      checked: [],
+      trackers: { '5ks': 0, 'martinis': 0 }
+    };
+
+    const grid = document.getElementById('grid');
+
+    squares.forEach((sq, i) => {
+      const cell = document.createElement('div');
+
+      if (sq.type === 'free') {
+        cell.className = 'cell free';
+        cell.innerHTML = `<span class="emoji">💛</span><span class="label">FREE</span>`;
+
+      } else if (sq.type === 'tracker') {
+        cell.className = 'cell tracker';
+        const filled = appState.trackers[sq.key] || 0;
+        if (filled >= sq.count) cell.classList.add('all-done');
+
+        let dotsHTML = '';
+        for (let d = 0; d < sq.count; d++) {
+          dotsHTML += `<div class="dot${d < filled ? ' filled' : ''}" data-tracker="${sq.key}" data-dot="${d}"></div>`;
+        }
+
+        cell.innerHTML = `
+          <span class="emoji">${sq.emoji}</span>
+          <span class="tracker-label">${sq.label}</span>
+          <div class="tracker-dots">${dotsHTML}</div>`;
+
+        cell.querySelectorAll('.dot').forEach(dot => {
+          dot.addEventListener('click', e => {
+            e.stopPropagation();
+            const key = dot.dataset.tracker;
+            const di = parseInt(dot.dataset.dot);
+            appState.trackers[key] = dot.classList.contains('filled') ? di : di + 1;
+            save();
+            rerenderTracker(cell, sq);
+            updateUI();
+          });
+        });
+
+      } else {
+        cell.className = 'cell';
+        cell.innerHTML = `<span class="emoji">${sq.emoji}</span><span class="label">${sq.label}</span>`;
+        if (appState.checked.includes(i)) cell.classList.add('checked');
+        cell.addEventListener('click', () => toggleNormal(i, cell));
+      }
+
+      grid.appendChild(cell);
+    });
+
+    function rerenderTracker(cell, sq) {
+      const filled = appState.trackers[sq.key] || 0;
+      cell.querySelectorAll('.dot').forEach((dot, d) => {
+        dot.classList.toggle('filled', d < filled);
+      });
+      cell.classList.toggle('all-done', filled >= sq.count);
+    }
+
+    function toggleNormal(i, cell) {
+      if (cell.classList.toggle('checked')) {
+        if (!appState.checked.includes(i)) appState.checked.push(i);
+      } else {
+        appState.checked = appState.checked.filter(x => x !== i);
+      }
+      save();
+      updateUI();
+    }
+
+    function countCompleted() {
+      let done = appState.checked.length;
+      squares.forEach(sq => {
+        if (sq.type === 'tracker' && (appState.trackers[sq.key] || 0) >= sq.count) done++;
+      });
+      return done;
+    }
+
+    function hasBingo() {
+      const s = Array(25).fill(false);
+      s[12] = true;
+      appState.checked.forEach(i => s[i] = true);
+      squares.forEach((sq, i) => {
+        if (sq.type === 'tracker' && (appState.trackers[sq.key] || 0) >= sq.count) s[i] = true;
+      });
+      const lines = [
+        [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
+        [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
+        [0,6,12,18,24],[4,8,12,16,20]
+      ];
+      return lines.some(line => line.every(i => s[i]));
+    }
+
+    function updateUI() {
+      const done = countCompleted();
+      document.getElementById('count').textContent = done;
+      document.getElementById('prog-text').textContent = `${done} / 24`;
+      document.getElementById('prog-fill').style.width = `${(done / 24) * 100}%`;
+      document.getElementById('banner').classList.toggle('show', hasBingo());
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function resetAll() {
+      if (!confirm('Reset all progress?')) return;
+      appState = { checked: [], trackers: { '5ks': 0, 'martinis': 0 } };
+      save();
+      document.querySelectorAll('.cell:not(.free)').forEach(c => c.classList.remove('checked', 'all-done'));
+      squares.forEach((sq, i) => {
+        if (sq.type === 'tracker') rerenderTracker(grid.children[i], sq);
+      });
+      updateUI();
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>
